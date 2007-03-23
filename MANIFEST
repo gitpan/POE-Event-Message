@@ -1,0 +1,11 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+TODO
+t/POE/Event/Message.t
+t/POE/Event/Message/Header.t
+t/POE/Event/Message/UniqueID.t
+lib/POE/Event/Message.pm
+lib/POE/Event/Message/Header.pm
+lib/POE/Event/Message/UniqueID.pm
