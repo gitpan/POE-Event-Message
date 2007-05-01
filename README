@@ -1,33 +1,43 @@
-POE-Event-Message version 0.01
-==============================
+
+POE-Event-Message
+=================
 
 This small set of classes is a starting point for creating a generic 
 application messaging protocol. The intent is for these to be used as 
-a foundation when building networked and/or event-driven applications.
+a foundation when building networked and/or event-driven applications
+such as Web services.
 
 Features of POE::Event::Message include the following.
 
-. Messages of this class have flexible routing capabilities 
-  that work both inside and outside POE-based applications. 
+. Messages of this class have flexible routing capabilities
+  that work both inside and outside POE-based applications.
 
-. The messages are designed to be plug-compatible with 
-  POE's existing 'postback' mechanism. I refer to this as 
-  a 'routeback' mechanism instead. 
+. A 'local' message routing mechanism is designed to be
+  plug-compatible with POE's existing 'postback' mechanism.
+  This is referred to as a 'routeback' mechanism in this class.
 
-. In addition, this class has the ability to introduce 
-  multiple 'forward' and/or 'reverse' routing to multiple
-  event and/or remote host destinations. This allows for
-  temporary interruption of normal message flow, without
-  any of the original participants (events or whatever)
-  knowing or caring.
-
+. A 'remote' message routing mechanism can be used by message-based
+  client scripts, or perhaps as a simple alternative to the 'IKC' 
+  (Inter Kernel Communication) mechanism.
+ 
 . Messages are delivered based on the type of the destination. 
-  A 'local' routing will trigger a POE 'post' or 'call' event, 
-  while a 'remote' routing invokes a socket connection to a 
+  A 'local' routing will trigger a POE 'post' or 'call' event,
+  while a 'remote' routing invokes a socket connection to a
   particular host and port. 
 
-. Messages can also be sent through a file handle, such as 
+. In addition, this class has the ability to introduce
+  multiple 'forward' and/or 'reverse' routing to multiple
+  event and/or remote host destinations. This allows for 
+  temporary interruption of normal message flow, without
+  any of the original participants (events or whatever)
+  knowing or caring. 
+ 
+. Messages can also be sent through a file handle, such as
   from a non-POE child to a POE-based parent process.
+
+. Messages can contain almost anything including binary data
+  and complex Perl data structures. 
+
 
 Note that POE and the POE kernel are not requirements for using 
 these classes. Time::Hires is highly recommended (as, without it, 

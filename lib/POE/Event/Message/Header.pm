@@ -98,7 +98,8 @@ sub _addRouting
 
     $host ||= "";
     $port ||= "";
-    $mode ||= "post";
+  # $mode ||= "post";
+  ( $mode = $self->mode() || "post" ) unless ( $mode );
 
     if ($host and $port) {
 	$service ||= "command";
@@ -151,6 +152,23 @@ sub hasRouteBack
     return undef unless (defined $self->{"RouteBack"});
     return( $self->{'RouteBack'}->[ 0 ] );
 }
+
+sub nextRouteType
+{   my($self) = @_;
+
+    my $nextRoute = $self->hasRouteTo() || $self->hasRouteBack();
+
+    return "remote" if ($nextRoute->[0] and $nextRoute->[1]);
+    return ""       unless $nextRoute->[2];
+    return "post"   if ($nextRoute->[2] =~ /^post/i);
+    return "call"   if ($nextRoute->[2] =~ /^call/i);
+    return "";
+}
+
+sub nextRouteIsRemote { ($_[0]->nextRouteType() eq "remote"      ? 1 : 0) }
+sub nextRouteIsLocal  { ($_[0]->nextRouteType() =~ /(post|call)/ ? 1 : 0) }
+sub nextRouteIsPost   { ($_[0]->nextRouteType() eq "post"        ? 1 : 0) }
+sub nextRouteIsCall   { ($_[0]->nextRouteType() eq "call"        ? 1 : 0) }
 
 #-----------------------------------------------------------------------
 
@@ -226,8 +244,18 @@ This document describes version 0.02, released November, 2005.
  $header->addRouteTo( Args );
  $header->addRouteBack( Args );
 
- $header->delRouteTo( );
- $header->delRouteBack( );
+ $route = $header->delRouteTo( );       # delete and return next
+ $route = $header->delRouteBack( );     # delete and return next
+
+ $route = $header->hasRouting();        # retain and return next
+ $route = $header->hasRouteTo();        # retain and return next
+ $route = $header->hasRouteBack();      # retain and return next
+
+ $next = $header->nextRouteType();      # post, call, remote or ''
+ $bool = $header->nextRouteIsRemote();  # 1 if remote    or 0 if not
+ $bool = $header->nextRouteIsLocal();   # 1 if post|call or 0
+ $bool = $header->nextRouteIsPost();    # 1 if post      or 0
+ $bool = $header->nextRouteIsCall();    # 1 if call      or 0
 
  print $header->dump();
 
@@ -335,7 +363,7 @@ See
 
 =head1 AUTHOR
 
-Chris Cobb, E<lt>nospamplease@ccobb.netE<gt>
+Chris Cobb [no dot spam at ccobb dot net]
 
 =head1 COPYRIGHT
 

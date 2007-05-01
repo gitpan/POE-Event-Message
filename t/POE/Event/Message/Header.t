@@ -3,7 +3,7 @@
 
 #########################
 
-use Test::More tests => 19;
+use Test::More tests => 27;
 
 BEGIN { use_ok('POE::Event::Message') };                     # 01
 
@@ -51,14 +51,26 @@ $route = $msg->getRouteBack();
 &testRouting( $route, @expected );  # sub defined just below # 15 - 18
 
 #------------------------
-# Empty out the routings
+# Empty out the routings, AND
+# Test the 'nextRoutIs___' methods
+
+is( $msg->nextRouteIsRemote(), 1, "Is next route remote?" );   # 19
+is( $msg->nextRouteIsLocal(),  0, "Is next route local?" );    # 20
+is( $msg->nextRouteIsPost(),   0, "Is next route 'post'?" );   # 21
+is( $msg->nextRouteIsCall(),   0, "Is next route 'call'?" );   # 22
 
 $msg->delRouteTo();
+
+is( $msg->nextRouteIsRemote(), 0, "Is next route remote?" );   # 23
+is( $msg->nextRouteIsLocal(),  1, "Is next route local?" );    # 24
+is( $msg->nextRouteIsPost(),   1, "Is next route 'post'?" );   # 25
+is( $msg->nextRouteIsCall(),   0, "Is next route 'call'?" );   # 26
+
 $msg->delRouteTo();
 $msg->delRouteBack();
 $msg->delRouteBack();
 
-is( $msg->hasRouting(), undef, "Is routing comlete?");       # 19
+is( $msg->hasRouting(), undef, "Is routing comlete?");       # 27
 
 #------------------------
 # TODO: more here

@@ -7,7 +7,7 @@
 use inc::Module::Install;
 
 name		'POE-Event-Message';
-author		'Chris Cobb <nospamplease@ccobb.net>';
+author		'Chris Cobb [no dot spam at ccobb dot net]';
 license 	'perl';
 all_from	'lib/POE/Event/Message.pm';
 tests		't/*/*/*.t t/*/*/*/*.t';

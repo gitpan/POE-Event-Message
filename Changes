@@ -1,5 +1,9 @@
 Revision history for Perl extension POE::Event::Message.
 
-0.01  Wed Mar 21 07:22:48 2007
+0.10  Mon Apr 30 11:55:09 2007
+	- fixed 'call' return value
+	- updated documentation
+
+0.09  Wed Mar 21 07:22:48 2007
 	- First release to CPAN
 
