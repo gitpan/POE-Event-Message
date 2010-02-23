@@ -367,7 +367,7 @@ Chris Cobb [no dot spam at ccobb dot net]
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005 by Hewlett-Packard. All rights reserved.
+Copyright (c) 2005-2010 by Chris Cobb, All rights reserved.
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 

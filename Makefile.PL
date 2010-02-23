@@ -2,7 +2,7 @@
 #
 # File:  Makefile.PL
 # Desc:  Make the makefile for POE::Event::Message and friends
-# Date:  Sat Mar 17 14:21:32 2007
+# Date:  Mon Feb 22 14:29:31 2010
 #
 use inc::Module::Install;
 
@@ -23,11 +23,11 @@ requires	warnings	=> 0;
 
 # Additional modules needed
 # Note that POE.pm is not required by this class and
-# Time::Hires is optional, but *highly* recommended!
+# Time::HiRes is optional, but *highly* recommended!
 ## requires 	POE			=> n/a;
 
 requires	POE::Driver::SysRW	=> 0;
 requires	POE::Filter::Reference	=> 0;
-requires 	Time::Hires		=> 0;
+requires 	Time::HiRes		=> 0;
 
 WriteAll();

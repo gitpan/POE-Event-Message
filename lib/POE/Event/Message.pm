@@ -4,6 +4,8 @@
 # Desc:  A generic messaging protocol - to use as a starting point
 # Date:  Mon Oct 10 10:35:59 2005
 # Stat:  Prototype, Experimental
+# Note:  Fix to remove message length limitation contributed 
+#        by Martin Holste, Sun 21 Feb 2010
 #
 package POE::Event::Message;
 use 5.006;
@@ -11,7 +13,7 @@ use strict;
 use warnings;
 
 our $PACK    = __PACKAGE__;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 ### @ISA     = qw( );
 
 # WARN:  Don't use POE or the POE::Kernel classes here. This is a
@@ -32,8 +34,8 @@ use POE::Driver::SysRW;               # sysread/syswrite driver
 
 my $HeaderClass = "POE::Event::Message::Header";
 ## $BodyClass   = "POE::Event::Message::Body";  # ((not yet created))
-my $Driver      = new POE::Driver::SysRW;
-my $Filter      = new POE::Filter::Reference;
+our $Driver     = new POE::Driver::SysRW;
+our $Filter     = new POE::Filter::Reference;
 
 #-------------------------------------------------------------------------
 # Message Creation (new message and reply message)
@@ -475,6 +477,25 @@ sub read
 	return $response;
     }
 
+    #-------------------------------------------------------------------
+    # Fix to remove message length limitation contributed 
+    # by Martin Holste, Sun 21 Feb 2010:
+    # Parse expected length from the beginning of the first payload
+    unless (ref($response) eq 'ARRAY' and $response->[0] =~ /^(\d+)\0/){
+        $response = $self->new();
+        $response->setErr(-1, 'Error: Did not receive expected payload length at beginning of payload');
+        return $response;
+    }   
+    my $expected_length = $1 + length($1) + 1;
+    my $received = length($response->[0]);
+    READ_LOOP: while ($received < $expected_length){
+        my $buf = $Driver->get($fh);
+        foreach (@$buf){
+	    push @$response, $_; 
+	    $received += length($_);
+        }   
+    }
+    #-------------------------------------------------------------------
     # filter the reply, or report error at this line:
     ($response) = @{ $Filter->get( $response ) };    my $line = __LINE__;
 
@@ -646,7 +667,7 @@ This document describes version 0.05, released December, 2005.
 
  $mesg->addRouteBack( "post", "", 'my_handler', @stateArgs );
 
- $resp = $mesg->route( @routeArgs );
+ ($resp) = $mesg->route( @routeArgs );
 
 
  # Routing Messages Outside the POE environment
@@ -657,7 +678,7 @@ This document describes version 0.05, released December, 2005.
 
  $mesg->addRemoteRouteTo( $host, $port "async" );
 
- $response = $mesg->route( @routeArgs );
+ ($response) = $mesg->route( @routeArgs );
 
 
  # Processing Messages Within the POE environment
@@ -1275,7 +1296,7 @@ Chris Cobb [no dot spam at ccobb dot net]
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005-2007 by Chris Cobb, All rights reserved.
+Copyright (c) 2005-2010 by Chris Cobb, All rights reserved.
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
